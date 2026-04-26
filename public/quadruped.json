@@ -1,0 +1,541 @@
+{
+  "model": {
+    "kind": "quadruped",
+    "input_dim": 339,
+    "output_dim": 412,
+    "latent_dim": 1024,
+    "codebook_channels": 256,
+    "codebook_dims": 4,
+    "sequence_length": 16,
+    "sequence_window": 0.5,
+    "denoiser_iterations": 3,
+    "input_per_bone": [
+      "pos",
+      "vel"
+    ]
+  },
+  "skeleton": {
+    "bone_names": [
+      "Hips",
+      "Spine",
+      "Spine1",
+      "Neck",
+      "Head",
+      "HeadSite",
+      "LeftShoulder",
+      "LeftArm",
+      "LeftForeArm",
+      "LeftHand",
+      "LeftHandSite",
+      "RightShoulder",
+      "RightArm",
+      "RightForeArm",
+      "RightHand",
+      "RightHandSite",
+      "LeftUpLeg",
+      "LeftLeg",
+      "LeftFoot",
+      "LeftFootSite",
+      "RightUpLeg",
+      "RightLeg",
+      "RightFoot",
+      "RightFootSite",
+      "Tail",
+      "Tail1",
+      "Tail1Site"
+    ],
+    "parent_names": [
+      null,
+      "Hips",
+      "Spine",
+      "Spine1",
+      "Neck",
+      "Head",
+      "Spine1",
+      "LeftShoulder",
+      "LeftArm",
+      "LeftForeArm",
+      "LeftHand",
+      "Spine1",
+      "RightShoulder",
+      "RightArm",
+      "RightForeArm",
+      "RightHand",
+      "Hips",
+      "LeftUpLeg",
+      "LeftLeg",
+      "LeftFoot",
+      "Hips",
+      "RightUpLeg",
+      "RightLeg",
+      "RightFoot",
+      "Hips",
+      "Tail",
+      "Tail1"
+    ],
+    "bone_count": 27,
+    "ik_chains": [
+      {
+        "label": "left_hand",
+        "source": 8,
+        "target": 10,
+        "contact_index": 0
+      },
+      {
+        "label": "right_hand",
+        "source": 13,
+        "target": 15,
+        "contact_index": 1
+      },
+      {
+        "label": "left_foot",
+        "source": 17,
+        "target": 19,
+        "contact_index": 2
+      },
+      {
+        "label": "right_foot",
+        "source": 21,
+        "target": 23,
+        "contact_index": 3
+      }
+    ],
+    "contact_labels": [
+      "L Hand",
+      "R Hand",
+      "L Foot",
+      "R Foot"
+    ]
+  },
+  "control": {
+    "sequence_length": 16,
+    "sequence_window": 0.5,
+    "prediction_fps": 10,
+    "sequence_fps": 30,
+    "min_timescale": 1.0,
+    "max_timescale": 1.5,
+    "synchronization_sensitivity": 5,
+    "timescale_sensitivity": 5,
+    "contact_power": 3.0,
+    "contact_threshold": 0.6666666666666666,
+    "trajectory_correction": 0.33,
+    "locomotion_modes": {
+      "walk": 0.7,
+      "pace": 1.2,
+      "trot": 2.0,
+      "canter": 4.0
+    },
+    "pid": {
+      "kp": 2.0,
+      "ki": 0.03,
+      "kd": 0.0
+    },
+    "input_deadzone": 0.25,
+    "action_trigger_speed_max": 0.5
+  },
+  "guidances": [
+    "Canter",
+    "Idle",
+    "Jump",
+    "Lie",
+    "Pace",
+    "Sit",
+    "Stand",
+    "Trot",
+    "Walk"
+  ],
+  "bin": {
+    "estimator.l1.weight": {
+      "offset": 0,
+      "count": 347136,
+      "shape": [
+        1024,
+        339
+      ],
+      "dtype": "f16"
+    },
+    "estimator.l1.bias": {
+      "offset": 694272,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "estimator.l2.weight": {
+      "offset": 698368,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "estimator.l2.bias": {
+      "offset": 2795520,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "estimator.l3.weight": {
+      "offset": 2799616,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "estimator.l3.bias": {
+      "offset": 4896768,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "denoiser.l1.weight": {
+      "offset": 4900864,
+      "count": 1395712,
+      "shape": [
+        1024,
+        1363
+      ],
+      "dtype": "f16"
+    },
+    "denoiser.l1.bias": {
+      "offset": 7692288,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "denoiser.l2.weight": {
+      "offset": 7696384,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "denoiser.l2.bias": {
+      "offset": 9793536,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "denoiser.l3.weight": {
+      "offset": 9797632,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "denoiser.l3.bias": {
+      "offset": 11894784,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.film.scale.weight": {
+      "offset": 11898880,
+      "count": 1363,
+      "shape": [
+        1363,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.film.scale.bias": {
+      "offset": 11904332,
+      "count": 1363,
+      "shape": [
+        1363
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.film.shift.weight": {
+      "offset": 11909784,
+      "count": 1363,
+      "shape": [
+        1363,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.film.shift.bias": {
+      "offset": 11915236,
+      "count": 1363,
+      "shape": [
+        1363
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.linear.weight": {
+      "offset": 11920688,
+      "count": 1395712,
+      "shape": [
+        1024,
+        1363
+      ],
+      "dtype": "f16"
+    },
+    "decoder.l1.linear.bias": {
+      "offset": 14712112,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.film.scale.weight": {
+      "offset": 14716208,
+      "count": 1024,
+      "shape": [
+        1024,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.film.scale.bias": {
+      "offset": 14720304,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.film.shift.weight": {
+      "offset": 14724400,
+      "count": 1024,
+      "shape": [
+        1024,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.film.shift.bias": {
+      "offset": 14728496,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.linear.weight": {
+      "offset": 14732592,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "decoder.l2.linear.bias": {
+      "offset": 16829744,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.film.scale.weight": {
+      "offset": 16833840,
+      "count": 1024,
+      "shape": [
+        1024,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.film.scale.bias": {
+      "offset": 16837936,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.film.shift.weight": {
+      "offset": 16842032,
+      "count": 1024,
+      "shape": [
+        1024,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.film.shift.bias": {
+      "offset": 16846128,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.linear.weight": {
+      "offset": 16850224,
+      "count": 421888,
+      "shape": [
+        412,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "decoder.l3.linear.bias": {
+      "offset": 17694000,
+      "count": 412,
+      "shape": [
+        412
+      ],
+      "dtype": "f32"
+    },
+    "input_stats.mean": {
+      "offset": 17695648,
+      "count": 339,
+      "shape": [
+        339
+      ],
+      "dtype": "f32"
+    },
+    "input_stats.std": {
+      "offset": 17697004,
+      "count": 339,
+      "shape": [
+        339
+      ],
+      "dtype": "f32"
+    },
+    "output_stats.mean": {
+      "offset": 17698360,
+      "count": 412,
+      "shape": [
+        412
+      ],
+      "dtype": "f32"
+    },
+    "output_stats.std": {
+      "offset": 17700008,
+      "count": 412,
+      "shape": [
+        412
+      ],
+      "dtype": "f32"
+    },
+    "time_stats.mean": {
+      "offset": 17701656,
+      "count": 1,
+      "shape": [
+        1
+      ],
+      "dtype": "f32"
+    },
+    "time_stats.std": {
+      "offset": 17701660,
+      "count": 1,
+      "shape": [
+        1
+      ],
+      "dtype": "f32"
+    },
+    "timing": {
+      "offset": 17701664,
+      "count": 16,
+      "shape": [
+        16
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Canter": {
+      "offset": 17701728,
+      "count": 81,
+      "shape": [
+        27,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Idle": {
+      "offset": 17702052,
+      "count": 81,
+      "shape": [
+        27,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Jump": {
+      "offset": 17702376,
+      "count": 81,
+      "shape": [
+        27,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Lie": {
+      "offset": 17702700,
+      "count": 81,
+      "shape": [
+        27,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Pace": {
+      "offset": 17703024,
+      "count": 81,
+      "shape": [
+        27,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Sit": {
+      "offset": 17703348,
+      "count": 81,
+      "shape": [
+        27,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Stand": {
+      "offset": 17703672,
+      "count": 81,
+      "shape": [
+        27,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Trot": {
+      "offset": 17703996,
+      "count": 81,
+      "shape": [
+        27,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Walk": {
+      "offset": 17704320,
+      "count": 81,
+      "shape": [
+        27,
+        3
+      ],
+      "dtype": "f32"
+    }
+  }
+}

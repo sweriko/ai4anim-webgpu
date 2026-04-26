@@ -1,0 +1,24 @@
+ai4anim-webgpu (web port)
+=========================
+
+This project is a derivative work of AI4AnimationPy:
+
+    https://github.com/facebookresearch/ai4animationpy
+
+    Copyright (c) Meta Platforms, Inc. and affiliates.
+    Authored by Paul Starke and Sebastian Starke.
+
+The motion-matching engine (sequence/root-series logic, agent control,
+autopilot brains), the biped and quadruped neural bundles
+(`public/biped.{bin,json}`, `public/quadruped.{bin,json}`), and the
+exporters under `tools/export_*.py` are ported / adapted from
+AI4AnimationPy. They retain the upstream license.
+
+The full license text is in LICENSE (CC BY-NC 4.0). Non-commercial use
+only. The "ai4anim-" prefix in this project's name is a descriptive
+reference to the upstream project being ported — not a claim of
+affiliation, sponsorship, or endorsement by Meta or by the original
+authors. Trademark rights to "AI4Animation" / "AI4AnimationPy" belong
+to their respective owners and are not licensed by this work.
+
+Modifications by sweriko

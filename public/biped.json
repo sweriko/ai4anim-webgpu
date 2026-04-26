@@ -1,0 +1,517 @@
+{
+  "model": {
+    "kind": "biped",
+    "input_dim": 441,
+    "output_dim": 352,
+    "latent_dim": 1024,
+    "codebook_channels": 256,
+    "codebook_dims": 4,
+    "sequence_length": 16,
+    "sequence_window": 0.5,
+    "denoiser_iterations": 3,
+    "input_per_bone": [
+      "pos",
+      "axisZ",
+      "axisY",
+      "vel"
+    ]
+  },
+  "skeleton": {
+    "bone_names": [
+      "Hips",
+      "LeftUpLeg",
+      "LeftLeg",
+      "LeftFoot",
+      "LeftToeBase",
+      "RightUpLeg",
+      "RightLeg",
+      "RightFoot",
+      "RightToeBase",
+      "Spine",
+      "Spine1",
+      "Spine2",
+      "Spine3",
+      "Neck",
+      "Head",
+      "LeftShoulder",
+      "LeftArm",
+      "LeftForeArm",
+      "LeftHand",
+      "RightShoulder",
+      "RightArm",
+      "RightForeArm",
+      "RightHand"
+    ],
+    "bone_count": 23,
+    "ground": {
+      "left_ankle": 3,
+      "left_ball": 4,
+      "right_ankle": 7,
+      "right_ball": 8
+    },
+    "legs": {
+      "left_hip": 1,
+      "left_knee": 2,
+      "left_ankle": 3,
+      "left_ball": 4,
+      "right_hip": 5,
+      "right_knee": 6,
+      "right_ankle": 7,
+      "right_ball": 8
+    },
+    "contact_labels": [
+      "L Ankle",
+      "L Ball",
+      "R Ankle",
+      "R Ball"
+    ]
+  },
+  "control": {
+    "sequence_length": 16,
+    "sequence_window": 0.5,
+    "prediction_fps": 10,
+    "sequence_fps": 30,
+    "min_timescale": 1.0,
+    "max_timescale": 1.5,
+    "synchronization_sensitivity": 5,
+    "timescale_sensitivity": 5,
+    "contact_power": 3.0,
+    "contact_threshold": 0.6666666666666666,
+    "trajectory_correction": 0.25
+  },
+  "guidances": [
+    "BigSteps",
+    "Chicken",
+    "Dinosaur",
+    "DragLeftLeg",
+    "HandsBetweenLegs",
+    "Idle",
+    "LeanRight",
+    "LegsApart",
+    "Neutral",
+    "OnHeels",
+    "Star",
+    "Zombie"
+  ],
+  "bin": {
+    "estimator.l1.weight": {
+      "offset": 0,
+      "count": 451584,
+      "shape": [
+        1024,
+        441
+      ],
+      "dtype": "f16"
+    },
+    "estimator.l1.bias": {
+      "offset": 903168,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "estimator.l2.weight": {
+      "offset": 907264,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "estimator.l2.bias": {
+      "offset": 3004416,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "estimator.l3.weight": {
+      "offset": 3008512,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "estimator.l3.bias": {
+      "offset": 5105664,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "denoiser.l1.weight": {
+      "offset": 5109760,
+      "count": 1500160,
+      "shape": [
+        1024,
+        1465
+      ],
+      "dtype": "f16"
+    },
+    "denoiser.l1.bias": {
+      "offset": 8110080,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "denoiser.l2.weight": {
+      "offset": 8114176,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "denoiser.l2.bias": {
+      "offset": 10211328,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "denoiser.l3.weight": {
+      "offset": 10215424,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "denoiser.l3.bias": {
+      "offset": 12312576,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.film.scale.weight": {
+      "offset": 12316672,
+      "count": 1465,
+      "shape": [
+        1465,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.film.scale.bias": {
+      "offset": 12322532,
+      "count": 1465,
+      "shape": [
+        1465
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.film.shift.weight": {
+      "offset": 12328392,
+      "count": 1465,
+      "shape": [
+        1465,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.film.shift.bias": {
+      "offset": 12334252,
+      "count": 1465,
+      "shape": [
+        1465
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l1.linear.weight": {
+      "offset": 12340112,
+      "count": 1500160,
+      "shape": [
+        1024,
+        1465
+      ],
+      "dtype": "f16"
+    },
+    "decoder.l1.linear.bias": {
+      "offset": 15340432,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.film.scale.weight": {
+      "offset": 15344528,
+      "count": 1024,
+      "shape": [
+        1024,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.film.scale.bias": {
+      "offset": 15348624,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.film.shift.weight": {
+      "offset": 15352720,
+      "count": 1024,
+      "shape": [
+        1024,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.film.shift.bias": {
+      "offset": 15356816,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l2.linear.weight": {
+      "offset": 15360912,
+      "count": 1048576,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "decoder.l2.linear.bias": {
+      "offset": 17458064,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.film.scale.weight": {
+      "offset": 17462160,
+      "count": 1024,
+      "shape": [
+        1024,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.film.scale.bias": {
+      "offset": 17466256,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.film.shift.weight": {
+      "offset": 17470352,
+      "count": 1024,
+      "shape": [
+        1024,
+        1
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.film.shift.bias": {
+      "offset": 17474448,
+      "count": 1024,
+      "shape": [
+        1024
+      ],
+      "dtype": "f32"
+    },
+    "decoder.l3.linear.weight": {
+      "offset": 17478544,
+      "count": 360448,
+      "shape": [
+        352,
+        1024
+      ],
+      "dtype": "f16"
+    },
+    "decoder.l3.linear.bias": {
+      "offset": 18199440,
+      "count": 352,
+      "shape": [
+        352
+      ],
+      "dtype": "f32"
+    },
+    "input_stats.mean": {
+      "offset": 18200848,
+      "count": 441,
+      "shape": [
+        441
+      ],
+      "dtype": "f32"
+    },
+    "input_stats.std": {
+      "offset": 18202612,
+      "count": 441,
+      "shape": [
+        441
+      ],
+      "dtype": "f32"
+    },
+    "output_stats.mean": {
+      "offset": 18204376,
+      "count": 352,
+      "shape": [
+        352
+      ],
+      "dtype": "f32"
+    },
+    "output_stats.std": {
+      "offset": 18205784,
+      "count": 352,
+      "shape": [
+        352
+      ],
+      "dtype": "f32"
+    },
+    "time_stats.mean": {
+      "offset": 18207192,
+      "count": 1,
+      "shape": [
+        1
+      ],
+      "dtype": "f32"
+    },
+    "time_stats.std": {
+      "offset": 18207196,
+      "count": 1,
+      "shape": [
+        1
+      ],
+      "dtype": "f32"
+    },
+    "timing": {
+      "offset": 18207200,
+      "count": 16,
+      "shape": [
+        16
+      ],
+      "dtype": "f32"
+    },
+    "guidance.BigSteps": {
+      "offset": 18207264,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Chicken": {
+      "offset": 18207540,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Dinosaur": {
+      "offset": 18207816,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.DragLeftLeg": {
+      "offset": 18208092,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.HandsBetweenLegs": {
+      "offset": 18208368,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Idle": {
+      "offset": 18208644,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.LeanRight": {
+      "offset": 18208920,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.LegsApart": {
+      "offset": 18209196,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Neutral": {
+      "offset": 18209472,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.OnHeels": {
+      "offset": 18209748,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Star": {
+      "offset": 18210024,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    },
+    "guidance.Zombie": {
+      "offset": 18210300,
+      "count": 69,
+      "shape": [
+        23,
+        3
+      ],
+      "dtype": "f32"
+    }
+  }
+}

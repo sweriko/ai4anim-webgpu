@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>AI4Anim WebGPU</title>
+    <style>
+      html, body {
+        margin: 0; padding: 0; height: 100%; overflow: hidden;
+        background: #1a1a1a; color: #eee;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        overscroll-behavior: none;
+      }
+      #canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+
+      /* Virtual joysticks — fixed-position bases in the bottom corners,
+         always visible once the Touch class adds .has-joysticks to <html>.
+         Pressing the base captures its pointer (LMB on desktop, single
+         touch on mobile) and the thumb tracks the cursor offset from the
+         base center. */
+      .joystick-base {
+        position: fixed;
+        width: 140px; height: 140px;
+        bottom: 70px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        border: 2px solid rgba(255, 255, 255, 0.22);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+        opacity: 0.55;
+        transition: opacity 0.12s ease-out;
+        z-index: 50;
+        touch-action: none;
+        user-select: none; -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+        display: none;
+      }
+      html.has-joysticks .joystick-base { display: block; }
+      .joystick-base.joystick-left { left: 60px; }
+      .joystick-base.joystick-right { right: 60px; }
+      .joystick-base.active { opacity: 1; }
+      /* Quadruped has no facing input — it follows velocity. Hide the
+         right (facing) stick when controlling a dog, on every device. */
+      html.player-quadruped .joystick-base.joystick-right { display: none !important; }
+      /* Desktop (mouse-primary): the right stick stands in for RMB-drag
+         facing, so anchor it just right of bottom-center where the mouse
+         hand naturally rests. */
+      @media (pointer: fine) {
+        .joystick-base.joystick-right {
+          right: auto;
+          left: 50%;
+          transform: translateX(calc(-50% + 90px));
+          bottom: 90px;
+        }
+      }
+      .joystick-thumb {
+        position: absolute; left: 50%; top: 50%;
+        width: 56px; height: 56px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.32);
+        border: 2px solid rgba(255, 255, 255, 0.55);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        pointer-events: none;
+      }
+
+      /* Switch-character button — only present on touch devices. */
+      .switch-btn {
+        position: fixed;
+        top: 12px; left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 22px;
+        background: rgba(20, 20, 22, 0.86);
+        color: #e8eef8;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 10px;
+        font: 500 13px ui-monospace, Menlo, Consolas, monospace;
+        letter-spacing: 0.04em;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+        z-index: 60;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none; -webkit-user-select: none;
+      }
+      .switch-btn:active { background: rgba(80, 100, 130, 0.85); }
+
+      /* WASD keycap hint — desktop only. Static W A S D layout in the
+         bottom-left, pressed keys briefly highlight so first-time users
+         see the keyboard input is live. */
+      #wasd-hint {
+        position: fixed;
+        left: 20px; bottom: 20px;
+        display: flex; flex-direction: column;
+        align-items: center; gap: 4px;
+        font: 600 13px ui-monospace, Menlo, Consolas, monospace;
+        color: rgba(232, 238, 248, 0.78);
+        user-select: none; -webkit-user-select: none;
+        pointer-events: none;
+        z-index: 40;
+      }
+      #wasd-hint .row { display: flex; gap: 4px; }
+      #wasd-hint .key {
+        width: 32px; height: 32px;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(20, 20, 22, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35),
+                    inset 0 -2px 0 rgba(255, 255, 255, 0.05);
+        transition: background 60ms ease-out, border-color 60ms ease-out;
+        pointer-events: auto;
+        cursor: pointer;
+        touch-action: none;
+      }
+      #wasd-hint .key:hover {
+        background: rgba(45, 55, 75, 0.85);
+        border-color: rgba(255, 255, 255, 0.32);
+      }
+      #wasd-hint .key.pressed {
+        background: rgba(120, 160, 220, 0.85);
+        border-color: rgba(170, 200, 240, 0.95);
+        color: #fff;
+      }
+
+      /* Hide the tweakpane and stats-gl panel entirely on touch-primary
+         devices — joysticks + switch button are the full mobile UI. The
+         WASD hint is also irrelevant without a keyboard. */
+      @media (pointer: coarse) {
+        .tp-dfwv, .stats-gl, #wasd-hint { display: none !important; }
+      }
+
+      /* Credit button — small "i" icon in the bottom-right corner. Tapping
+         opens a popup with attribution to the upstream authors and license
+         note. Sits below the right joystick on mobile (joystick sits at
+         70px from bottom, button at 12px, no overlap). */
+      #credit-btn {
+        position: fixed;
+        right: 12px; bottom: 12px;
+        width: 32px; height: 32px;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(20, 20, 22, 0.78);
+        color: rgba(232, 238, 248, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 50%;
+        font: italic 600 14px "Times New Roman", serif;
+        cursor: pointer;
+        user-select: none; -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        z-index: 60;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      }
+      #credit-btn:hover, #credit-btn:active {
+        background: rgba(45, 55, 75, 0.9);
+        border-color: rgba(255, 255, 255, 0.35);
+      }
+      #credit-popup {
+        position: fixed;
+        right: 12px; bottom: 56px;
+        min-width: 240px; max-width: 280px;
+        padding: 12px 14px;
+        background: rgba(20, 20, 22, 0.94);
+        color: rgba(232, 238, 248, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 8px;
+        font: 12px ui-monospace, Menlo, Consolas, monospace;
+        line-height: 1.45;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        z-index: 60;
+      }
+      #credit-popup.hidden { display: none; }
+      #credit-popup .title {
+        font-size: 10.5px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.06em;
+        opacity: 0.75; margin-bottom: 8px;
+      }
+      #credit-popup ul { list-style: none; padding: 0; margin: 0; }
+      #credit-popup li + li { margin-top: 4px; }
+      #credit-popup a {
+        color: #9bd1ff; text-decoration: none;
+      }
+      #credit-popup a:hover { text-decoration: underline; }
+      #credit-popup .nc {
+        margin-top: 10px; padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        font-size: 10.5px; opacity: 0.78;
+      }
+
+      /* Tweakpane lives in the top-right, scrollable if content overflows. */
+      .tp-dfwv {
+        top: 12px !important;
+        right: 12px !important;
+        max-height: calc(100vh - 24px);
+        overflow-y: auto;
+        width: 280px !important;
+        --tp-base-background-color: rgba(20, 20, 22, 0.86);
+        --tp-base-shadow-color: rgba(0, 0, 0, 0.4);
+        --tp-button-background-color: rgba(90, 110, 140, 0.6);
+        --tp-button-background-color-active: rgba(120, 160, 220, 0.9);
+        --tp-button-background-color-focus: rgba(120, 160, 220, 0.8);
+        --tp-button-background-color-hover: rgba(120, 160, 220, 0.7);
+        --tp-button-foreground-color: #e8eef8;
+        --tp-container-background-color: rgba(60, 70, 85, 0.35);
+        --tp-container-background-color-active: rgba(90, 110, 140, 0.7);
+        --tp-container-background-color-focus: rgba(90, 110, 140, 0.55);
+        --tp-container-background-color-hover: rgba(90, 110, 140, 0.45);
+        --tp-container-foreground-color: #e8eef8;
+        --tp-groove-foreground-color: rgba(90, 110, 140, 0.35);
+        --tp-input-background-color: rgba(30, 34, 40, 0.9);
+        --tp-input-background-color-active: rgba(55, 70, 90, 0.9);
+        --tp-input-background-color-focus: rgba(55, 70, 90, 0.9);
+        --tp-input-background-color-hover: rgba(45, 55, 70, 0.9);
+        --tp-input-foreground-color: #e8eef8;
+        --tp-label-foreground-color: #9ab;
+        --tp-monitor-background-color: rgba(20, 22, 26, 0.9);
+        --tp-monitor-foreground-color: #cde;
+      }
+      /* Compact spacing */
+      .tp-dfwv .tp-lblv_l { font-size: 10.5px; }
+      .tp-dfwv .tp-fldv_t { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+      /* stats-gl panel top-left */
+      .stats-gl {
+        left: 12px !important;
+        top: 12px !important;
+      }
+
+      /* Brief boot overlay until the pane is up. */
+      #boot {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        font-size: 13px; color: #89a; opacity: 0.9;
+        pointer-events: none; user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <div id="boot">loading…</div>
+    <div id="wasd-hint" aria-hidden="true">
+      <div class="row"><div class="key" data-k="w">W</div></div>
+      <div class="row">
+        <div class="key" data-k="a">A</div>
+        <div class="key" data-k="s">S</div>
+        <div class="key" data-k="d">D</div>
+      </div>
+    </div>
+    <button id="credit-btn" type="button" aria-label="Credits">i</button>
+    <div id="credit-popup" class="hidden" role="dialog" aria-label="Credits">
+      <div class="title">Built on AI4AnimationPy</div>
+      <ul>
+        <li>· <a href="https://github.com/paulstarke" target="_blank" rel="noopener noreferrer">Paul Starke</a></li>
+        <li>· <a href="https://github.com/sebastianstarke" target="_blank" rel="noopener noreferrer">Sebastian Starke</a></li>
+        <li>· <a href="https://github.com/facebookresearch/ai4animationpy" target="_blank" rel="noopener noreferrer">facebookresearch/ai4animationpy</a></li>
+      </ul>
+      <div class="nc">Web port — CC BY-NC 4.0. Non-commercial use only.</div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
