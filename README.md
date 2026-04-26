@@ -4,7 +4,8 @@ A TypeScript three.js WebGPU inference port of the biped + quadruped neural-moti
 
 **Live demo:** [motionsynth.sweriko.com](https://motionsynth.sweriko.com)
 
-<video src="https://github.com/sweriko/ai4anim-webgpu/raw/main/docs/neuralmotion.mp4" controls muted playsinline width="100%"></video>
+<img width="1375" height="773" alt="image" src="https://github.com/user-attachments/assets/ac3abd00-18ba-4e70-97be-1c96e9805598" />
+
 
 ## What it does
 
